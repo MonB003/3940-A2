@@ -3,6 +3,7 @@ package request;
 import java.io.InputStream;
 
 public class Request {
+  
     private InputStream inputStream = null;
 
     public Request(InputStream inStream) {
@@ -18,3 +19,4 @@ public class Request {
         return inputStream;
     }
 }
+

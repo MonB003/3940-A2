@@ -4,8 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class Response {
+    
+final public static String HTTP_VERSION = "HTTP/1.1 OK";
 
     // private OutputStream out;
     private PrintWriter printWriter;
@@ -13,17 +18,20 @@ public class Response {
     private String contentType;
     private ByteArrayOutputStream out;
     private ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy,MM,dd HH:mm:ss");
 
-    
-    
     public Response(ByteArrayOutputStream outStream) {
         this.out = outStream;
         printWriter = new PrintWriter(out);
     }
 
-
     private void createHeader() throws IOException{
-        String headerString = "GET / HTTP/1.1\r\n" + "Content-Type: " +contentType + " " + "Character-Encoding: " + characterEncoding + "\r\n";
+        String headerString = "GET /"+ HTTP_VERSION + "\r\n" 
+                            + "Date: "+ LocalDateTime.now() + "\r\n"
+                          
+                            + "Content-Type: " + contentType + "\r\n" 
+                            + "Character-Encoding: " + characterEncoding + "\r\n";
+        System.out.println(headerString);
         out.write(headerString.getBytes());
     }
 

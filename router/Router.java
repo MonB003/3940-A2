@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+
 import request.Request;
 import response.Response;
 import servlets.UploadServlet;
@@ -32,28 +33,12 @@ public class Router extends Thread {
             // UploadServlet up = (UploadServlet) c.getDeclaredConstructor().newInstance();
             UploadServlet up = new UploadServlet();
             System.out.println("1");
-           // up.doGet(res, req);
-            up.doPost(res, req);
+           up.doGet(res, req);
+            // up.doPost(res, req);
             OutputStream out = socket.getOutputStream();
             out.write(res.createByteArray());
             System.out.println("2");
-            // socket.close();
-
-            String listing = "";
-            // Socket socket = new Socket("localhost", 8999);
-            BufferedReader bufferIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream outBuff = socket.getOutputStream();
-            FileInputStream fis = new FileInputStream("AndroidLogo.png");
-            byte[] bytes = fis.readAllBytes();
-            out.write(bytes);
-            socket.shutdownOutput();
-            fis.close();
-            System.out.println("Came this far\n");
-            String filename = "";
-            while ((filename = bufferIn.readLine()) != null) {
-                listing += filename;
-            }
-            socket.shutdownInput();
+            socket.close();
       
         
         } catch (Exception exception) {
