@@ -25,7 +25,9 @@ public class UploadServlet extends Servlet {
         //         + "Password: <input type="password" name="password" />\n" + "<br />\n"
         //         + "<input type="submit" value="Sign in" />\n" + "</form>\n"
         //         + "</form>\n" + "</body>\n</html\n");
-        
+
+
+        /* FORM */
         String html = "<!DOCTYPE html>\r\n" +
                            "<html>\r\n" +
                            "<head>\r\n" + 
@@ -61,8 +63,6 @@ public class UploadServlet extends Servlet {
         // writer.write("<input type=\"submit\" value=\"Submit\"/>\r\n");
         // writer.write("</form>\r\n");
         // writer.write("</body>\r\n</html>\r\n");
-        
-        
     }
 
 //    @Override
