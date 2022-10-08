@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,10 +20,37 @@ final public static String HTTP_VERSION = "HTTP/1.1 OK";
     private ByteArrayOutputStream out;
     private ByteArrayOutputStream outStream = new ByteArrayOutputStream();
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy,MM,dd HH:mm:ss");
+    private Socket socket = null;
 
     public Response(ByteArrayOutputStream outStream) {
         this.out = outStream;
         printWriter = new PrintWriter(out);
+    }
+
+    
+    
+    public Response(Socket socket, ByteArrayOutputStream outStream){
+        this.out = outStream;
+        this.socket = socket;
+        printWriter = new PrintWriter(out); // make sure we initialize.
+    }
+
+    public void send(String page){
+        try{
+            OutputStream out = socket.getOutputStream();
+
+            String htmlPage = page;
+
+            final String CRLF = "\r\n"; // need this line
+
+            String response = "HTTP/1.1 200 OK" + CRLF +
+                    "Content-Length: " + htmlPage.getBytes().length + CRLF + CRLF
+                    + htmlPage + CRLF + CRLF;
+
+            out.write(response.getBytes()); // renders the page.
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void createHeader() throws IOException{
