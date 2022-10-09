@@ -30,8 +30,17 @@ public class UploadServlet extends Servlet {
                 "Date: <input type=\"date\" name=\"date\"<br/><br/>\r\n" +
                 "<br />\n" +
                 "<input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n" +
-                "</form>\r\n" +
-                "</body>\r\n</html>\r\n";
+                "</form>\r\n";
+                // + "</body>\r\n</html>\r\n";
+
+                if (req.getUserAgent().equals("browser")) {
+                    // Send back html of our directory.
+                    html += getListing();
+                }
+
+
+                String endTags = "</body>\r\n</html>\r\n";
+                html += endTags;
 
 
         System.out.println(html);
@@ -81,4 +90,18 @@ public class UploadServlet extends Servlet {
         }
 
     }
+
+
+    private String getListing() {
+        String dirList =  null;
+         File dir = new File(".");
+         String[] chld = dir.list();
+         for(int i = 0; i < chld.length; i++){
+            if ((new File(chld[i])).isDirectory())
+               dirList += "<li><button type=\"button\">"+chld[i]+"</button></li>";
+            else
+               dirList += "<li>"+chld[i]+"</li>";      
+         }
+         return dirList;
+       } 
 }

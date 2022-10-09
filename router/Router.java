@@ -46,22 +46,23 @@ public class Router extends Thread {
             String method = req.getReqMethod();
             System.out.println("-------------------------------1. METHOD:" + method);
 
-            up.doGet(res, req);
+            // up.doGet(res, req);
             
             // determines which method to call based on request.
-            // switch(method){
-            //     case "GET":
-            //         System.out.println("-------------------------------2. METHOD:" + method);
-            //         up.doGet(res, req);
-            //         break;
-            //     case "POST":
-            //         System.out.println("-------------------------------3. METHOD:" + method);
-            //         up.doPost(res, req);
-            //         break;
-            //     default:
-            //         System.out.println("Uh oh");
-            //         break;
-            // }
+            switch(method){
+                case "GET":
+                    System.out.println("-------------------------------2. METHOD:" + method);
+                    up.doGet(res, req);
+                    break;
+                case "POST":
+                    System.out.println("-------------------------------3. METHOD:" + method);
+                    up.doGet(res, req);
+                    up.doPost(res, req);
+                    break;
+                default:
+                    System.out.println("Uh oh");
+                    break;
+            }
             
 
             // up.doGet(res, req);
