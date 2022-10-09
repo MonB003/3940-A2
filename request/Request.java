@@ -26,17 +26,31 @@ public class Request {
 
         System.out.println("SCANNER");
         // Scanner a = new Scanner(inputStream);
-        Scanner a = new Scanner(inStream);
+        Scanner a = new Scanner(inputStream);
         String header = "";
         String temp;
-        while(a.hasNext()){
-            temp = a.nextLine();
-            // System.out.println(temp);
-            header += temp;
-            header += "\n";
-        }
 
-        System.out.println(header);
+        // reqType = a.next();
+        // System.out.println("REQ TYPE: " + reqType);
+
+        String firstLine = a.next();
+        if (firstLine.contains("GET")){
+            reqType = "GET";
+            System.out.println("REQ TYPE: " + reqType);
+        } else if (firstLine.contains("POST")){
+            reqType = "POST";
+            System.out.println("REQ TYPE: " + reqType);
+        }
+    
+
+        // while(a.hasNext()){
+        //     temp = a.nextLine();
+        //     // System.out.println(temp);
+        //     header += temp;
+        //     header += "\n";
+        // }
+
+        // System.out.println(header);
         System.out.println("END OF HEADER");
     
         System.out.println("input stream:" + inStream.toString());
