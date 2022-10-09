@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
+
+// Needed to parse Multipart/form-data
+import javax.servlet.http.Part;
+
 import request.*;
 import response.*;
 
@@ -63,56 +68,99 @@ public class UploadServlet extends Servlet {
         System.out.println("POST");
         System.out.println("res: " + res);
         System.out.println("req: " + req);
+        System.out.println("POST-Request User-Agent: " + req.getUserAgent());
 
 
-        try {
-            InputStream in = req.getInputStream();
-         
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(req.getUserAgent().equals("cli")){
 
-            byte[] content = new byte[1];
-            int bytesRead = -1;
-            while ((bytesRead = in.read(content)) != -1) {
-                baos.write(content, 0, bytesRead);
+            // Detect CLI, Execute CLI POST Request Implementation
+            try{
+                System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
+
+                // Reference Jay's UploadServlet.java code from Assignment1b.
+                // Objective: Need to define getPart() method in Request Class to help parse multipart/form-data
+                // Part filePart = req.getPart("File");
+                // String fileName = filePart.getSubmittedFileName();
+                // System.out.println("Recieved Filename: "+ fileName);
+        
+                // Part filePartDate = req.getPart("Date");
+                // Scanner scannerDate = new Scanner(filePartDate.getInputStream());
+                // String stringDate = scannerDate.nextLine();
+                // System.out.println("Recieved Date: "+ stringDate);
+        
+                // Part filePartKeyword = req.getPart("Keyword");
+                // Scanner scannerKeyword = new Scanner(filePartKeyword.getInputStream());
+                // String stringKeyword = scannerKeyword.nextLine();
+                // System.out.println("Recieved Keyword: "+ stringKeyword);
+        
+                // Part filePartCaption = req.getPart("Caption");
+                // Scanner scannerCaption = new Scanner(filePartCaption.getInputStream());
+                // String stringCaption = scannerCaption.nextLine();
+                // System.out.println("Recieved Caption: "+ stringCaption);
+        
+                // if(fileName.equals("")){
+                //     response.setStatus(302);
+                //     return;
+                // }
+
+                // filePart.write(System.getProperty("catalina.base") + "/webapps/Client-Server-A1b/images/" + fileName);
+
+            } catch (Exception e){
+
             }
-            System.out.println("2");
-            Clock clock = Clock.systemDefaultZone();
-            long milliSeconds = clock.millis();
-            OutputStream outputStream = new FileOutputStream(new File("./images/" + String.valueOf(milliSeconds) + ".png"));
-            baos.writeTo(outputStream);
-            outputStream.close();
 
-            PrintWriter out = new PrintWriter(res.getOutputStream(), true);
-            File dir = new File("./images");
-            
-            // " key : value "
-            HashMap<String,String> responseOutput = new HashMap<String,String>();
-            
-            String[] chld = dir.list();
-            for (int i = 0; i < chld.length; i++) {
-                String currImage = "Image " + i + ": ";
-                String fileName = chld[i];
 
-                // Store image name in hashmap 
-                responseOutput.put(currImage, fileName);
+        } else if (req.getUserAgent().equals("browser")){
+            // Detect Browser, Execute Browser POST Request Implementation
+            try {
+                InputStream in = req.getInputStream();
+             
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    
+                byte[] content = new byte[1];
+                int bytesRead = -1;
+                while ((bytesRead = in.read(content)) != -1) {
+                    baos.write(content, 0, bytesRead);
+                }
+                System.out.println("2");
+                Clock clock = Clock.systemDefaultZone();
+                long milliSeconds = clock.millis();
+                OutputStream outputStream = new FileOutputStream(new File("./images/" + String.valueOf(milliSeconds) + ".png"));
+                baos.writeTo(outputStream);
+                outputStream.close();
+    
+                PrintWriter out = new PrintWriter(res.getOutputStream(), true);
+                File dir = new File("./images");
                 
+                // " key : value "
+                HashMap<String,String> responseOutput = new HashMap<String,String>();
                 
-                out.println(fileName + "\n");
-                System.out.println(fileName); // writing to the console
+                String[] chld = dir.list();
+                for (int i = 0; i < chld.length; i++) {
+                    String currImage = "Image " + i + ": ";
+                    String fileName = chld[i];
+    
+                    // Store image name in hashmap 
+                    responseOutput.put(currImage, fileName);
+                    
+                    
+                    out.println(fileName + "\n");
+                    System.out.println(fileName); // writing to the console
+                }
+                Arrays.sort(chld);  // Sort the array
+                System.out.println("CHLD SORTED: ");
+                for (String imageName : chld) {
+                    System.out.println(imageName);
+                }
+                
+    
+                // JSONObject jsonObject = new JSONObject(responseOutput);
+                // String jsonString = jsonObject.toString();
+                // System.out.println(jsonObject);
+                
+            } catch (Exception ex) {
+                System.err.println(ex);
             }
-            Arrays.sort(chld);  // Sort the array
-            System.out.println("CHLD SORTED: ");
-            for (String imageName : chld) {
-                System.out.println(imageName);
-            }
-            
-
-            // JSONObject jsonObject = new JSONObject(responseOutput);
-            // String jsonString = jsonObject.toString();
-            // System.out.println(jsonObject);
-            
-        } catch (Exception ex) {
-            System.err.println(ex);
         }
 
     }
