@@ -10,9 +10,9 @@ public class Server {
             System.err.println("Could not listen on port: 8999.");
             System.exit(-1);
         }
-        while (true) {
+        // while (true) {
             System.out.println("Waiting for connection");
-	    new Router(serverSocket.accept()).start();
-        }
+	        new Router(serverSocket.accept()).start(); // thread created
+        // }
     }
 }

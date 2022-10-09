@@ -27,8 +27,6 @@ final public static String HTTP_VERSION = "HTTP/1.1 OK";
         printWriter = new PrintWriter(out);
     }
 
-    
-    
     public Response(Socket socket, ByteArrayOutputStream outStream){
         this.out = outStream;
         this.socket = socket;
@@ -59,7 +57,6 @@ final public static String HTTP_VERSION = "HTTP/1.1 OK";
                           
                             + "Content-Type: " + contentType + "\r\n" 
                             + "Character-Encoding: " + characterEncoding + "\r\n";
-        System.out.println(headerString);
         out.write(headerString.getBytes());
     }
 

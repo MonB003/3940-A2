@@ -12,6 +12,7 @@ import java.io.*;
 
 public class UploadServlet extends Servlet {
     public void doGet(Response res, Request req) {
+        System.out.println("Here in do get");
         res.setContentType("text/html");
         res.setCharacterEncoding("UTF-8");
         PrintWriter writer = res.getWriter();
@@ -22,7 +23,7 @@ public class UploadServlet extends Servlet {
                 "</head>\r\n" +
                 "<body>\r\n" +
                 "<h1>Upload file</h1>\r\n" +
-                "<form id=\"form\" method=\"POST\" action=\"upload\" enctype=\"multipart/form-data\">\r\n" +
+                "<form id=\"form\" method=\"POST\" action=\"/\" enctype=\"multipart/form-data\">\r\n" + // up to us on where to go, another tcp request comes
                 "<input type=\"file\" name=\"fileName\"/><br/><br/>\r\n" +
                 "Caption: <input type=\"text\" name=\"caption\"<br/><br/>\r\n" +
                 "<br />\n" +
@@ -30,13 +31,13 @@ public class UploadServlet extends Servlet {
                 "<br />\n" +
                 "<input id='formBtn' type=\"submit\" name=\"submit\" value=\"Submit\"/>\r\n" +
                 "</form>\r\n" +
-                
                 "</body>\r\n</html>\r\n";
+
+
         System.out.println(html);
         writer.println(html);
 
         System.out.println(req);
-
         res.send(html);
 
         // "<script>document.getElementById('formBtn').addEventListener('click', function(event){" +
@@ -46,6 +47,8 @@ public class UploadServlet extends Servlet {
 
     public void doPost(Response res, Request req) {
         System.out.println("POST");
+        System.out.println("res: " + res);
+        System.out.println("req: " + req);
 
 
         try {
