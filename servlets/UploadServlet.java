@@ -4,7 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.time.Clock;
-
+import java.util.Arrays;
+import java.util.HashMap;
 import request.*;
 import response.*;
 
@@ -83,12 +84,33 @@ public class UploadServlet extends Servlet {
 
             PrintWriter out = new PrintWriter(res.getOutputStream(), true);
             File dir = new File("./images");
+            
+            // " key : value "
+            HashMap<String,String> responseOutput = new HashMap<String,String>();
+            
             String[] chld = dir.list();
             for (int i = 0; i < chld.length; i++) {
+                String currImage = "Image " + i + ": ";
                 String fileName = chld[i];
+
+                // Store image name in hashmap 
+                responseOutput.put(currImage, fileName);
+                
+                
                 out.println(fileName + "\n");
                 System.out.println(fileName); // writing to the console
             }
+            Arrays.sort(chld);  // Sort the array
+            System.out.println("CHLD SORTED: ");
+            for (String imageName : chld) {
+                System.out.println(imageName);
+            }
+            
+
+            // JSONObject jsonObject = new JSONObject(responseOutput);
+            // String jsonString = jsonObject.toString();
+            // System.out.println(jsonObject);
+            
         } catch (Exception ex) {
             System.err.println(ex);
         }
