@@ -16,6 +16,10 @@ public class UploadServlet extends Servlet {
         res.setContentType("text/html");
         res.setCharacterEncoding("UTF-8");
         PrintWriter writer = res.getWriter();
+
+        // Check User-Agent
+        System.out.println("USER-Agent: " + req.getUserAgent());
+
         String html = "<!DOCTYPE html>\r\n" +
                 "<html>\r\n" +
                 "<head>\r\n" +
@@ -33,7 +37,7 @@ public class UploadServlet extends Servlet {
                 "</form>\r\n";
                 // + "</body>\r\n</html>\r\n";
 
-                if (req.getUserAgent().equals("browser")) {
+                if (req.getUserAgent().equals("browser") && req.getReqMethod().equals("POST")) {
                     // Send back html of our directory.
                     html += getListing();
                 }
@@ -73,12 +77,12 @@ public class UploadServlet extends Servlet {
             System.out.println("2");
             Clock clock = Clock.systemDefaultZone();
             long milliSeconds = clock.millis();
-            OutputStream outputStream = new FileOutputStream(new File(String.valueOf(milliSeconds) + ".png"));
+            OutputStream outputStream = new FileOutputStream(new File("./images/" + String.valueOf(milliSeconds) + ".png"));
             baos.writeTo(outputStream);
             outputStream.close();
 
             PrintWriter out = new PrintWriter(res.getOutputStream(), true);
-            File dir = new File(".");
+            File dir = new File("./images");
             String[] chld = dir.list();
             for (int i = 0; i < chld.length; i++) {
                 String fileName = chld[i];
@@ -93,8 +97,8 @@ public class UploadServlet extends Servlet {
 
 
     private String getListing() {
-        String dirList =  null;
-         File dir = new File(".");
+        String dirList =  "<ul>";
+         File dir = new File("./images");
          String[] chld = dir.list();
          for(int i = 0; i < chld.length; i++){
             if ((new File(chld[i])).isDirectory())
@@ -102,6 +106,7 @@ public class UploadServlet extends Servlet {
             else
                dirList += "<li>"+chld[i]+"</li>";      
          }
+         dirList += "</ul>";
          return dirList;
        } 
 }

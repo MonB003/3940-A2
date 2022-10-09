@@ -52,10 +52,15 @@ public class Request {
                 if (temp.startsWith("User-Agent")) {
                     reqUserAgent = "browser";
                     System.out.println("***User agent found: " + reqUserAgent);
-                } else {
-                    reqUserAgent = "cli";
-                }
+                } 
+                // else {
+                //     reqUserAgent = "cli";
+                // }
 
+            }
+
+            if (reqUserAgent.equals("")) {
+                reqUserAgent = "cli";
             }
         } catch (Exception e) {
             System.out.println(e);
