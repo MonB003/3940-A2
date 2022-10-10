@@ -1,5 +1,3 @@
-package router;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -7,14 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-
-
-//import request.Request;
-//import response.Response;
-//import servlets.UploadServlet;
-//import servlets.ConcreteServlet;
-
-import servlets.*;
 
 public class Router extends Thread {
 
@@ -41,16 +31,16 @@ public class Router extends Thread {
 
             String locationOfRequest = req.getUserAgent();
 
-            ConcreteServlet up = new ConcreteServlet(); // conrete class is new concrete version of servlet to allow for casting/reflection to subclasses.
+            Servlet up = null; // conrete class is new concrete version of servlet to allow for casting/reflection to subclasses.
 
             if(locationOfRequest.equals("browser")){
-                Class<?> c = Class.forName("servlets.UploadServlet");
+                Class<?> c = Class.forName("UploadServlet");
                 up = (UploadServlet) c.getDeclaredConstructor().newInstance(); // cast to upload
                 System.out.println("instance has been cast to upload servlet");
                 up = new UploadServlet();
 
             } else if(locationOfRequest.equals("cli")) {
-                Class<?> c = Class.forName("servlets.ClientServlet");
+                Class<?> c = Class.forName("ClientServlet");
                 System.out.println("instance has been cast to client/cli servlet");
                 up = (ClientServlet) c.getDeclaredConstructor().newInstance(); // cast to client 
                 up = new ClientServlet();

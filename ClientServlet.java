@@ -1,5 +1,3 @@
-package servlets;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -14,10 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import request.Request;
-import response.Response;
 
-public class ClientServlet extends ConcreteServlet {
+public class ClientServlet extends Servlet {
 
     // Defining for Socket, the name of the Host
     public String serverName = "localhost";

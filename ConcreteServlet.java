@@ -1,8 +1,3 @@
-package servlets;
-
-import request.*;
-import response.*;
-
 public class ConcreteServlet extends Servlet{
 
     public ConcreteServlet(){

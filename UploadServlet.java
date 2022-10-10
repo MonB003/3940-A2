@@ -1,5 +1,3 @@
-package servlets;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,12 +9,9 @@ import java.util.Scanner;
 // Needed to parse Multipart/form-data
 import javax.servlet.http.Part;
 
-import request.*;
-import response.*;
-
 import java.io.*;
 
-public class UploadServlet extends ConcreteServlet {
+public class UploadServlet extends Servlet {
     public void doGet(Response res, Request req) {
         System.out.println("Here in do get");
         res.setContentType("text/html");
