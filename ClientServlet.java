@@ -1,6 +1,9 @@
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,7 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
 
 public class ClientServlet extends Servlet {
 
@@ -102,7 +108,8 @@ public class ClientServlet extends Servlet {
             writer.append("Content-Type: image/png").append(newLine);
             writer.append("Content-Transfer-Encoding: binary").append(newLine);
             writer.append(newLine).flush();
-            Files.copy(file, outputStream);
+            // Files.copy(file, outputStream);
+            writer.append(encodeImage(imagePath));
             outputStream.flush();
             writer.append(newLine).flush();
             // End of Multipart.
@@ -116,6 +123,29 @@ public class ClientServlet extends Servlet {
             System.out.println("POST Request Error: " + e);
             e.printStackTrace();
         }
+    }
+
+    public String encodeImage(String imagePath) throws Exception{
+        FileInputStream imageStream = new FileInputStream(imagePath);
+        byte[] data = imageStream.readAllBytes();
+        String imageString = Base64.getEncoder().encodeToString(data);
+        return imageString;
+    }
+
+    public static BufferedImage decodeToImage(String imageString) {
+ 
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            Base64.Decoder decoder = Base64.getDecoder();
+            imageByte = decoder.decode(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     public void getUserInput() {
@@ -173,7 +203,6 @@ public class ClientServlet extends Servlet {
 
         // Detect CLI, Execute CLI POST Request Implementation
         try {
-            InputStream in = req.getInputStream();
             System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
 
             // System.out.println("Caption from Payload: " + req.getFormData("Caption"));
@@ -192,8 +221,13 @@ public class ClientServlet extends Servlet {
             Clock clock = Clock.systemDefaultZone();
             long milliSeconds = clock.millis();
             String fileName = String.valueOf(milliSeconds);
-            OutputStream outputStream = null;
-            ByteArrayOutputStream byteOutputStream = null;
+
+            BufferedImage image = decodeToImage(req.getImageByteCode());
+            File outputFile = new File("./images/" + fileName + ".png");
+            ImageIO.write(image, "png", outputFile);
+
+            // OutputStream outputStream = null;
+            // ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             // try {
             // outputStream = new FileOutputStream("./images/" + fileName + ".png");
             // byteOutputStream = new ByteArrayOutputStream();
@@ -204,10 +238,33 @@ public class ClientServlet extends Servlet {
             // System.out.println(e);
             // }
 
-            try (FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".png")) {
-                fos.write(req.getImageByteCode());
-            }
+            // try (FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".png")) {
+            //     fos.write(req.getImageByteCode());
+            // }
 
+            //-------------------------file reading function
+
+            // File imageText = new File("./images/" + fileName + ".txt");
+
+            // if(imageText.exists()){
+            //     BufferedImage bImage = ImageIO.read(imageText);
+            //     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //     ImageIO.write(bImage, "png",baos);
+            //     byte[] data = baos.toByteArray();
+            //     ByteArrayInputStream bis = new ByteArrayInputStream(data);
+            //     BufferedImage bImage2 = ImageIO.read(bis);
+            //     ImageIO.write(bImage2, "png", new File("output.png"));
+            //     System.out.println("image created");
+            // }
+
+            // System.out.println("byte code: " + req.getImageByteCode());
+            // ByteArrayInputStream inputStream = new ByteArrayInputStream(req.getImageByteCode());
+            // System.out.println("input stream:" + inputStream.available());
+            // BufferedImage image = ImageIO.read(inputStream);
+            // System.out.println("image buff: "  + image);
+            // ImageIO.write(image, "png", new File("./images/" + fileName+".png"));
+           
+            
             // Path path = Paths.get("./images");
             // Files.write(path,req.getImageByteCode());
             // File.write(System.getProperty("catalina.base") +

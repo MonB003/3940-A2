@@ -15,7 +15,8 @@ public class Request {
     private String reqType = null;
     private String reqUserAgent = "";
     private HashMap<String, String> FormData = new HashMap<String, String>();
-    private byte[] imageByteCode;
+    private String imageByteCode;
+    
 
     public Request(InputStream inStream) {
         System.out.println("INPUT STREAM");
@@ -154,10 +155,10 @@ public class Request {
             
             if (temp.startsWith("Accept-Language:") || temp.contains("--boundary--")){
                 System.out.println("THIS SHOULD BE THE LAST ONE");
-                imageByteCode = savedByteCode.getBytes();
-                System.out.println("ImageByteCode: " + imageByteCode);
+                imageByteCode = savedByteCode;
+                //System.out.println("ImageByteCode: " + imageByteCode);
                 // String "Byte Code"
-                System.out.println(savedByteCode);
+                //System.out.println(savedByteCode);
                 endOfDataReached = true;
             }
         }
@@ -232,7 +233,7 @@ public class Request {
         return FormData.get(key);
     }
 
-    public byte[] getImageByteCode(){
+    public String getImageByteCode(){
         return imageByteCode;
     }
 }
