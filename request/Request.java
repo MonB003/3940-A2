@@ -19,86 +19,63 @@ public class Request {
 
         inputStream = inStream;
 
-        // Create a method to parse incoming request payload.a
-
-        System.out.println("SCANNER");
-        // Scanner a = new Scanner(inputStream);
-        Scanner a = new Scanner(inputStream);
-        String header = "";
-        String temp = "";
-
-        // reqType = a.next();
-        // System.out.println("REQ TYPE: " + reqType);
-
-        String firstLine = a.next();
-        if (firstLine.contains("GET")) {
-            reqType = "GET";
-            System.out.println("REQ TYPE: " + reqType);
-        } else if (firstLine.contains("POST")) {
-            reqType = "POST";
-            System.out.println("REQ TYPE: " + reqType);
-        }
-
-        // boolean userAgentFound = (reqUserAgent.equals("browser") || reqUserAgent.equals("cli"));
-        try {
-            // while((temp = a.nextLine()) != null && temp.toString() !="\n" &&
-            //  && !temp.equals("\n") && !temp.equals("\r\n")
-            // && !temp.equals("\n\n")) {
-            // temp.toString() != "\r\n") {
-            while (reqUserAgent.equals("") && (temp = a.nextLine()) != null) {
-                    
-                System.out.println("PRINT: " + temp);
-
-                if (temp.startsWith("User-Agent")) {
-                    reqUserAgent = "browser";
-                    System.out.println("***User agent found: " + reqUserAgent);
-                } 
-                // else {
-                //     reqUserAgent = "cli";
-                // }
-
-            }
-
-            if (reqUserAgent.equals("")) {
-                reqUserAgent = "cli";
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        switch(reqUserAgent){
-            // Depending on the User-Agent, we need to send back different response.
-            case "browser":
-                break;
-            case "cli":
-                break;
-        }
-
-        // while(a.hasNext() != false){
-        // temp = a.nextLine();
-        // // System.out.println(temp);
-        // header += temp;
-        // header += "\n";
+        // switch(reqUserAgent){
+        // // Depending on the User-Agent, we need to send back different response.
+        // case "browser":
+        // break;
+        // case "cli":
+        // break;
         // }
 
-        // System.out.println(header);
-        System.out.println("END OF HEADER");
-
-        System.out.println("input stream:" + inStream.toString());
-
-        // parsePayload(inputStream);
+        // Create a method to parse incoming request payload
+        parsePayload(inputStream);
 
     }
 
     public void parsePayload(InputStream inStream) {
+        System.out.println("PARSE PAYLOAD");
+
         Scanner scanner = new Scanner(inStream);
 
         // Need to know Request type: GET or POST
+        // Parse First Line
         reqType = scanner.next();
         System.out.println("The Request Type is: " + reqType);
+
         // Need to know User-Agent type: Find where the connection is comming from, CLI
         // or Browser.
         // If User agent exists - browser, else - command line
+
+        // Stores the current line being read
+        String temp = "";
+
+        // Loops until user agent line in the header
+        for (int i = 0; i < 6; i++) {
+            temp = scanner.nextLine();
+            System.out.println(temp);
+
+            // User agent is the sixth line in the header
+            if (i == 5) {
+                System.out.println("LAST LINE:");
+                String userAgentLine = temp;
+                String[] userAgentStr = userAgentLine.split(" ", 2);
+
+                System.out.println("FOR LOOP:");
+                for (int j = 0; j < userAgentStr.length; j++) {
+                    System.out.println(j + ": " + userAgentStr[j]);
+                }
+
+                // Check user agent value
+                if (temp.startsWith("User-Agent:")) {
+                    reqUserAgent = "browser";
+
+                } else {
+                    reqUserAgent = "cli";
+                }
+
+                System.out.println("***User agent found in Request.java: " + reqUserAgent);
+            }
+        }
 
         // ArrayList<String,String> FormData = new ArrayList<String,String>(); -
         // Consider using hashmap instead..
@@ -135,14 +112,8 @@ public class Request {
         // }
 
         System.out.println("Made it here");
-        scanner.close();
-
+        // scanner.close();
     }
-
-    // private static String convertInputStreamToString(InputStream inputStream)
-    // throws IOException {
-    // return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-    // }
 
     public void setReqType(final String reqType) {
         this.reqType = reqType;
