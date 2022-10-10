@@ -1,8 +1,8 @@
 package servlets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,37 +76,44 @@ public class UploadServlet extends Servlet {
 
             // Detect CLI, Execute CLI POST Request Implementation
             try{
+                InputStream in = req.getInputStream();
                 System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
 
-                System.out.println("Caption from Payload: " + req.getFormData("Caption"));
+                //System.out.println("Caption from Payload: " + req.getFormData("Caption"));
 
                 // Reference Jay's UploadServlet.java code from Assignment1b.
                 // Objective: Need to define getPart() method in Request Class to help parse multipart/form-data
                 // Part filePart = req.getPart("File");
                 // String fileName = filePart.getSubmittedFileName();
                 // System.out.println("Recieved Filename: "+ fileName);
-        
-                // Part filePartDate = req.getPart("Date");
-                // Scanner scannerDate = new Scanner(filePartDate.getInputStream());
-                // String stringDate = scannerDate.nextLine();
-                // System.out.println("Recieved Date: "+ stringDate);
-        
-                // Part filePartKeyword = req.getPart("Keyword");
-                // Scanner scannerKeyword = new Scanner(filePartKeyword.getInputStream());
-                // String stringKeyword = scannerKeyword.nextLine();
-                // System.out.println("Recieved Keyword: "+ stringKeyword);
-        
-                // Part filePartCaption = req.getPart("Caption");
-                // Scanner scannerCaption = new Scanner(filePartCaption.getInputStream());
-                // String stringCaption = scannerCaption.nextLine();
-                // System.out.println("Recieved Caption: "+ stringCaption);
-        
-                // if(fileName.equals("")){
-                //     response.setStatus(302);
-                //     return;
+
+                System.out.println("Recieved Date: "+ req.getFormData("Date"));
+                System.out.println("Recieved Keyword: "+ req.getFormData("Keyword"));
+                System.out.println("Recieved Caption: "+ req.getFormData("Caption"));
+                
+
+                Clock clock = Clock.systemDefaultZone();
+                long milliSeconds = clock.millis();
+                String fileName = String.valueOf(milliSeconds);
+                OutputStream outputStream = null;
+                ByteArrayOutputStream byteOutputStream = null;
+                // try {
+                //     outputStream = new FileOutputStream("./images/" + fileName + ".png");
+                //     byteOutputStream = new ByteArrayOutputStream();
+                //     byteOutputStream.write(req.getImageByteCode());
+                //     byteOutputStream.writeTo(outputStream);
+                //     outputStream.close();
+                // } catch (Exception e){
+                //     System.out.println(e);
                 // }
 
-                // filePart.write(System.getProperty("catalina.base") + "/webapps/Client-Server-A1b/images/" + fileName);
+                try(FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".txt")){
+                    fos.write(req.getImageByteCode());
+                }
+
+                // Path path = Paths.get("./images");
+                // Files.write(path,req.getImageByteCode());
+                // File.write(System.getProperty("catalina.base") + "/webapps/Client-Server-A1b/images/" + fileName);
 
             } catch (Exception e){
 

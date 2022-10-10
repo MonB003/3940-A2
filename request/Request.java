@@ -157,7 +157,7 @@ public class Request {
             if (temp.startsWith("Accept-Language:") || temp.contains("--boundary--")){
                 System.out.println("THIS SHOULD BE THE LAST ONE");
                 imageByteCode = savedByteCode.getBytes();
-
+                System.out.println("ImageByteCode: " + imageByteCode);
                 // String "Byte Code"
                 System.out.println(savedByteCode);
                 endOfDataReached = true;
@@ -232,5 +232,9 @@ public class Request {
 
     public String getFormData(String key){
         return FormData.get(key);
+    }
+
+    public byte[] getImageByteCode(){
+        return imageByteCode;
     }
 }
