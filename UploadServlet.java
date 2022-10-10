@@ -116,6 +116,9 @@ public class UploadServlet extends Servlet {
             System.out.println("Running Browser Servlet POST Code.");
             // Detect Browser, Execute Browser POST Request Implementation
             try {
+                System.out.println("Recieved Date: " + req.getFormData("Date"));
+                System.out.println("Recieved Keyword: " + req.getFormData("Keyword"));
+                System.out.println("Recieved Caption: " + req.getFormData("Caption"));
                 InputStream in = req.getInputStream();
              
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
