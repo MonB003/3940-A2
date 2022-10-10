@@ -1,9 +1,12 @@
 package request;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -14,6 +17,7 @@ public class Request {
     private String reqType = null;
     private String reqUserAgent = "";
     private HashMap<String, String> FormData = new HashMap<String, String>();
+    private byte[] imageByteCode;
 
     public Request(InputStream inStream) {
         System.out.println("INPUT STREAM");
@@ -34,6 +38,8 @@ public class Request {
     }
 
     public void parsePayload(InputStream inStream) {
+        String savedByteCode = "";
+
         System.out.println("PARSE PAYLOAD");
 
         Scanner scanner = new Scanner(inStream);
@@ -106,9 +112,10 @@ public class Request {
                 // Loop until next boundary is reached
                 while (!currBody.trim().equals("")) {
                     currValue = currBody;           // Store previous line's value
-                    System.out.println("CURR VALUE: " + currValue);
+                    //System.out.println("CURR VALUE: " + currValue);
                     currBody = scanner.nextLine();  // Get next line
-                    System.out.println("CURR BODY: " + currBody);
+                    //System.out.println("CURR BODY: " + currBody);
+                    System.out.println("CURRBODY: " + currBody);
                 }
 
                 currValue = scanner.nextLine();
@@ -119,17 +126,40 @@ public class Request {
                 currentKey++;
             }
 
-            if (currentKey == 3){
-                // Parse File Body Part..
+            if (currentKey == 3 && temp.startsWith("--boundary")){
 
+                // At the File Body Part. Currently at "--boundary"
+                String iterateByteCode = scanner.nextLine();
+
+                // Parse File Body Part..
+                while(!(iterateByteCode.trim().equals(""))) {
+
+                    // Keep iterating until you find empty line, which tells us to start reading at the next line.
+                    System.out.println("NOT AT EMPTY LINE" + iterateByteCode);
+                    iterateByteCode = scanner.nextLine();
+                }
+                temp = scanner.nextLine();
             }
          
-            
+
+            while ((!temp.trim().equals("")) && currentKey == 3 && !(temp.equals("--boundary--"))){
+                //System.out.println("BYTE CODE????" + temp);
+                // Start reading and saving byte code line by line.
+
+                savedByteCode = savedByteCode + temp;
+
+                temp = scanner.nextLine();
+            }
+
             // Parse Payload
-            System.out.println("parsePayload Temp: " + temp);
+            // System.out.println("parsePayload Temp: " + temp);
             
             if (temp.startsWith("Accept-Language:") || temp.contains("--boundary--")){
                 System.out.println("THIS SHOULD BE THE LAST ONE");
+                imageByteCode = savedByteCode.getBytes();
+
+                // String "Byte Code"
+                System.out.println(savedByteCode);
                 endOfDataReached = true;
             }
         }
@@ -198,5 +228,9 @@ public class Request {
 
     public InputStream getInputStream() {
         return inputStream;
+    }
+
+    public String getFormData(String key){
+        return FormData.get(key);
     }
 }

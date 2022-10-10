@@ -78,6 +78,8 @@ public class UploadServlet extends Servlet {
             try{
                 System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
 
+                System.out.println("Caption from Payload: " + req.getFormData("Caption"));
+
                 // Reference Jay's UploadServlet.java code from Assignment1b.
                 // Objective: Need to define getPart() method in Request Class to help parse multipart/form-data
                 // Part filePart = req.getPart("File");
