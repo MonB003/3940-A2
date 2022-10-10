@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
-// Needed to parse Multipart/form-data
-import javax.servlet.http.Part;
-
 import java.io.*;
 
 public class UploadServlet extends Servlet {
@@ -66,56 +63,56 @@ public class UploadServlet extends Servlet {
         System.out.println("POST-Request User-Agent: " + req.getUserAgent());
 
 
-        if(req.getUserAgent().equals("cli")){
-            System.out.println("Running CLI Servlet POST Code.");
+        // if(req.getUserAgent().equals("cli")){
+        //     System.out.println("Running CLI Servlet POST Code.");
 
-            // Detect CLI, Execute CLI POST Request Implementation
-            try{
-                InputStream in = req.getInputStream();
-                System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
+        //     // Detect CLI, Execute CLI POST Request Implementation
+        //     try{
+        //         InputStream in = req.getInputStream();
+        //         System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
 
-                //System.out.println("Caption from Payload: " + req.getFormData("Caption"));
+        //         //System.out.println("Caption from Payload: " + req.getFormData("Caption"));
 
-                // Reference Jay's UploadServlet.java code from Assignment1b.
-                // Objective: Need to define getPart() method in Request Class to help parse multipart/form-data
-                // Part filePart = req.getPart("File");
-                // String fileName = filePart.getSubmittedFileName();
-                // System.out.println("Recieved Filename: "+ fileName);
+        //         // Reference Jay's UploadServlet.java code from Assignment1b.
+        //         // Objective: Need to define getPart() method in Request Class to help parse multipart/form-data
+        //         // Part filePart = req.getPart("File");
+        //         // String fileName = filePart.getSubmittedFileName();
+        //         // System.out.println("Recieved Filename: "+ fileName);
 
-                System.out.println("Recieved Date: "+ req.getFormData("Date"));
-                System.out.println("Recieved Keyword: "+ req.getFormData("Keyword"));
-                System.out.println("Recieved Caption: "+ req.getFormData("Caption"));
+        //         System.out.println("Recieved Date: "+ req.getFormData("Date"));
+        //         System.out.println("Recieved Keyword: "+ req.getFormData("Keyword"));
+        //         System.out.println("Recieved Caption: "+ req.getFormData("Caption"));
                 
 
-                Clock clock = Clock.systemDefaultZone();
-                long milliSeconds = clock.millis();
-                String fileName = String.valueOf(milliSeconds);
-                OutputStream outputStream = null;
-                ByteArrayOutputStream byteOutputStream = null;
-                // try {
-                //     outputStream = new FileOutputStream("./images/" + fileName + ".png");
-                //     byteOutputStream = new ByteArrayOutputStream();
-                //     byteOutputStream.write(req.getImageByteCode());
-                //     byteOutputStream.writeTo(outputStream);
-                //     outputStream.close();
-                // } catch (Exception e){
-                //     System.out.println(e);
-                // }
+        //         Clock clock = Clock.systemDefaultZone();
+        //         long milliSeconds = clock.millis();
+        //         String fileName = String.valueOf(milliSeconds);
+        //         OutputStream outputStream = null;
+        //         ByteArrayOutputStream byteOutputStream = null;
+        //         // try {
+        //         //     outputStream = new FileOutputStream("./images/" + fileName + ".png");
+        //         //     byteOutputStream = new ByteArrayOutputStream();
+        //         //     byteOutputStream.write(req.getImageByteCode());
+        //         //     byteOutputStream.writeTo(outputStream);
+        //         //     outputStream.close();
+        //         // } catch (Exception e){
+        //         //     System.out.println(e);
+        //         // }
 
-                try(FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".txt")){
-                    fos.write(req.getImageByteCode());
-                }
+        //         try(FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".txt")){
+        //             fos.write(req.getImageByteCode());
+        //         }
 
-                // Path path = Paths.get("./images");
-                // Files.write(path,req.getImageByteCode());
-                // File.write(System.getProperty("catalina.base") + "/webapps/Client-Server-A1b/images/" + fileName);
+        //         // Path path = Paths.get("./images");
+        //         // Files.write(path,req.getImageByteCode());
+        //         // File.write(System.getProperty("catalina.base") + "/webapps/Client-Server-A1b/images/" + fileName);
 
-            } catch (Exception e){
+        //     } catch (Exception e){
+        //         e.printStackTrace();
+        //     }
 
-            }
 
-
-        } else if (req.getUserAgent().equals("browser")){
+        // } else if (req.getUserAgent().equals("browser")){
             System.out.println("Running Browser Servlet POST Code.");
             // Detect Browser, Execute Browser POST Request Implementation
             try {
@@ -169,7 +166,7 @@ public class UploadServlet extends Servlet {
             }
         }
 
-    }
+    // }
 
 
     private String getListing() {
