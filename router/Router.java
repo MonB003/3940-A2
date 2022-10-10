@@ -62,7 +62,7 @@ public class Router extends Thread {
             // UploadServlet up = new UploadServlet();
             String method = req.getReqMethod();
 
-   
+     
             switch(method){
                 case "GET":
                     System.out.println("-------------------------------2. METHOD:" + method);
