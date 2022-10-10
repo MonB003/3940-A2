@@ -14,8 +14,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import request.Request;
+import response.Response;
 
-public class ClientServlet extends ConcreteServlet{
+public class ClientServlet extends ConcreteServlet {
 
     // Defining for Socket, the name of the Host
     public String serverName = "localhost";
@@ -159,10 +161,17 @@ public class ClientServlet extends ConcreteServlet{
 
     }
 
+
+    public void doGet(Response res, Request req){};
+    public void doPost(Response res, Request req){};
+
+
+
+    /** main method */
     public static void main(String args[]){
 
         ClientServlet client = new ClientServlet();
-        client.getUserInput();
+        client.getUserInput(); // get request --> making connection to server
         client.POSTRequest();
 
     }
