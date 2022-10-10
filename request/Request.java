@@ -45,6 +45,8 @@ public class Request {
             //  && !temp.equals("\n") && !temp.equals("\r\n")
             // && !temp.equals("\n\n")) {
             // temp.toString() != "\r\n") {
+
+
             while (reqUserAgent.equals("") && (temp = a.nextLine()) != null) {
                     
                 System.out.println("PRINT: " + temp);
@@ -89,6 +91,35 @@ public class Request {
         // parsePayload(inputStream);
 
     }
+
+
+    private processNextLine(String nextLine){
+
+        System.out.println("next line: " + nextLine);
+        for(int i = 0; i < nextLine.length; i++){
+
+        }
+
+    }
+
+    private void scanInputStream(Scanner streamReader){
+
+    int index = 0;
+    boolean found = true;
+
+    while (streamReader.hasNextLine()) {
+                    
+            String nextLine = streamReader.nextLine(); // next line
+            processNextLine(nextLine);
+
+            if(nextLine =="\n\r"){
+                break;
+            }
+
+    }
+
+
+
 
     public void parsePayload(InputStream inStream) {
         Scanner scanner = new Scanner(inStream);
