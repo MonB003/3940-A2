@@ -11,6 +11,7 @@ import java.net.Socket;
 import request.Request;
 import response.Response;
 import servlets.UploadServlet;
+import servlets.*;
 
 public class Router extends Thread {
 
@@ -34,21 +35,31 @@ public class Router extends Thread {
             Request req = new Request(in);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Response res = new Response(socket, baos);
-            // Class<?> c = Class.forName("UploadServlet.java");
-            // UploadServlet up = (UploadServlet) c.getDeclaredConstructor().newInstance();
-            // if(req.getParameter("submit") != null){ //we need to check what page the request wants to go to
-            // }
+
+            String locationOfRequest = req.getUserAgent();
+
+            ConcreteServlet up = new ConcreteServlet(); // conrete class is new concrete version of servlet to allow for casting/reflection to subclasses.
+
+            if(locationOfRequest.equals("browser")){
+                Class<?> c = Class.forName("servlets.UploadServlet");
+                up = (UploadServlet) c.getDeclaredConstructor().newInstance(); // cast to upload
+                System.out.println("instance has been cast to upload servlet");
+                up = new UploadServlet();
+
+            } else if(locationOfRequest.equals("cli")) {
+                Class<?> c = Class.forName("servlets.ClientServlet");
+                System.out.println("instance has been cast to client/cli servlet");
+                up = (ClientServlet) c.getDeclaredConstructor().newInstance(); // cast to client 
+                up = new ClientServlet();
+            }
 
             // REFLECTION HERE 
             // 
-            System.out.println("BEFORE");
-            UploadServlet up = new UploadServlet();
-            String method = req.getReqMethod();
-            System.out.println("-------------------------------1. METHOD:" + method);
 
-            // up.doGet(res, req);
-            
-            // determines which method to call based on request.
+            // UploadServlet up = new UploadServlet();
+            String method = req.getReqMethod();
+
+   
             switch(method){
                 case "GET":
                     System.out.println("-------------------------------2. METHOD:" + method);

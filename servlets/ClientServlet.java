@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class ClientServlet {
+public class ClientServlet extends ConcreteServlet{
 
     // Defining for Socket, the name of the Host
     public String serverName = "localhost";

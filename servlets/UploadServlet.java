@@ -16,7 +16,7 @@ import response.*;
 
 import java.io.*;
 
-public class UploadServlet extends Servlet {
+public class UploadServlet extends ConcreteServlet {
     public void doGet(Response res, Request req) {
         System.out.println("Here in do get");
         res.setContentType("text/html");
@@ -51,17 +51,9 @@ public class UploadServlet extends Servlet {
 
                 String endTags = "</body>\r\n</html>\r\n";
                 html += endTags;
-
-
-        System.out.println(html);
         writer.println(html);
 
-        System.out.println(req);
         res.send(html);
-
-        // "<script>document.getElementById('formBtn').addEventListener('click', function(event){" +
-        //         "event.preventDefault()});</script>" +
-
     }
 
     public void doPost(Response res, Request req) {
@@ -69,7 +61,6 @@ public class UploadServlet extends Servlet {
         System.out.println("res: " + res);
         System.out.println("req: " + req);
         System.out.println("POST-Request User-Agent: " + req.getUserAgent());
-
 
         if(req.getUserAgent().equals("cli")){
             System.out.println("Running CLI Servlet POST Code.");
