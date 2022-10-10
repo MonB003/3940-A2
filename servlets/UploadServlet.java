@@ -72,6 +72,7 @@ public class UploadServlet extends Servlet {
 
 
         if(req.getUserAgent().equals("cli")){
+            System.out.println("Running CLI Servlet POST Code.");
 
             // Detect CLI, Execute CLI POST Request Implementation
             try{
@@ -111,6 +112,7 @@ public class UploadServlet extends Servlet {
 
 
         } else if (req.getUserAgent().equals("browser")){
+            System.out.println("Running Browser Servlet POST Code.");
             // Detect Browser, Execute Browser POST Request Implementation
             try {
                 InputStream in = req.getInputStream();
@@ -171,9 +173,9 @@ public class UploadServlet extends Servlet {
          File dir = new File("./images");
          String[] chld = dir.list();
          for(int i = 0; i < chld.length; i++){
-            if ((new File(chld[i])).isDirectory())
-               dirList += "<li><button type=\"button\">"+chld[i]+"</button></li>";
-            else
+            // if ((new File(chld[i])).isDirectory())
+            //    dirList += "<li><button type=\"button\">"+chld[i]+"</button></li>";
+            // else
                dirList += "<li>"+chld[i]+"</li>";      
          }
          dirList += "</ul>";

@@ -13,6 +13,7 @@ public class Request {
     private InputStream inputStream = null;
     private String reqType = null;
     private String reqUserAgent = "";
+    private HashMap<String, String> FormData = new HashMap<String, String>();
 
     public Request(InputStream inStream) {
         System.out.println("INPUT STREAM");
@@ -50,36 +51,100 @@ public class Request {
         String temp = "";
 
         // Loops until user agent line in the header
-        for (int i = 0; i < 6; i++) {
+        // boolean userAgentFound = (reqUserAgent.equals("browser") || reqUserAgent.equals("cli"));
+        // try {
+        //     // while((temp = a.nextLine()) != null && temp.toString() !="\n" &&
+        //     //  && !temp.equals("\n") && !temp.equals("\r\n")
+        //     // && !temp.equals("\n\n")) {
+        //     // temp.toString() != "\r\n") {
+        //     while (reqUserAgent.equals("") && (temp = scanner.nextLine()) != null) {
+                    
+        //         System.out.println("PRINT: " + temp);
+
+        //         if (temp.startsWith("User-Agent")) {
+        //             reqUserAgent = "cli";
+        //             System.out.println("***User agent found: " + reqUserAgent);
+        //         } 
+        //         // else {
+        //         //     reqUserAgent = "cli";
+        //         // }
+
+        //     }
+
+        //     if (reqUserAgent.equals("")) {
+        //         reqUserAgent = "browser";
+        //     }
+        // } catch (Exception e) {
+        //     System.out.println(e);
+        // }
+
+        String dataKeys[] = {"Date", "Keyword", "Caption", "File"};
+        int currentKey = 0;
+        int maxKey = 4;
+
+        // Loop until we detect end of multipart/form-data ["--"+boundary+"--"]
+        boolean endOfDataReached = false;
+        // while(!temp.equals("--boundary--")) {
+        while(!endOfDataReached && currentKey < maxKey) {
+            // Print each token.
             temp = scanner.nextLine();
-            System.out.println(temp);
+            
+            // Check and Set User-Agent
+            if (temp.startsWith("User-Agent:")){
+                reqUserAgent = "browser";
+            }
+            if (temp.startsWith("User-Agent: cli")){
+                reqUserAgent = "cli";
+            } 
 
-            // User agent is the sixth line in the header
-            if (i == 5) {
-                System.out.println("LAST LINE:");
-                String userAgentLine = temp;
-                String[] userAgentStr = userAgentLine.split(" ", 2);
 
-                System.out.println("FOR LOOP:");
-                for (int j = 0; j < userAgentStr.length; j++) {
-                    System.out.println(j + ": " + userAgentStr[j]);
+            if (temp.startsWith("--boundary")) {
+                // Start of the current body from the form data
+                String currBody = scanner.nextLine();
+                String currValue = "";
+
+                // Loop until next boundary is reached
+                while (!currBody.trim().equals("")) {
+                    currValue = currBody;           // Store previous line's value
+                    System.out.println("CURR VALUE: " + currValue);
+                    currBody = scanner.nextLine();  // Get next line
+                    System.out.println("CURR BODY: " + currBody);
                 }
 
-                // Check user agent value
-                if (temp.startsWith("User-Agent:")) {
-                    reqUserAgent = "browser";
+                currValue = scanner.nextLine();
 
-                } else {
-                    reqUserAgent = "cli";
-                }
+                // Store value in hashmap
+                FormData.put(dataKeys[currentKey], currValue);
+                System.out.println("PUT IN MAP: " + dataKeys[currentKey] + ", " + currValue);
+                currentKey++;
+            }
 
-                System.out.println("***User agent found in Request.java: " + reqUserAgent);
+            if (currentKey == 3){
+                // Parse File Body Part..
+
+            }
+         
+            
+            // Parse Payload
+            System.out.println("parsePayload Temp: " + temp);
+            
+            if (temp.startsWith("Accept-Language:") || temp.contains("--boundary--")){
+                System.out.println("THIS SHOULD BE THE LAST ONE");
+                endOfDataReached = true;
             }
         }
 
+        // if (reqUserAgent.equals("")) {
+        //         reqUserAgent = "cli";
+        // }
+
+
+
+
+
+
         // ArrayList<String,String> FormData = new ArrayList<String,String>(); -
         // Consider using hashmap instead..
-        HashMap<String, String> FormData = new HashMap<String, String>();
 
         // Parse First Line
         // String FirstLine = scanner.next();

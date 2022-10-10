@@ -143,7 +143,7 @@ public class ClientServlet {
             userInput = scanner.nextLine();
         }
         MultiKeyword = userInput;
-        System.out.println("Keword: " + MultiKeyword + "\n");
+        System.out.println("Keyword: " + MultiKeyword + "\n");
 
         // User Input for Keyword
         System.out.print("Please enter a Caption for the image\n> ");

@@ -94,3 +94,14 @@ UNNEEDED PRINT LINES:
         System.out.println("input stream:" + inStream.toString());
 
 
+-----------------------------------------
+
+    String userAgentLine = temp; 
+            String[] userAgentStr = userAgentLine.split(";", 2); 
+            // djfsbgksijgfsjb sdf a483t  ; sgrjgns;srgr ;srs
+
+            // map.put("Date", ...)
+            System.out.println("FOR LOOP:");
+            for (int j = 0; j < userAgentStr.length; j++) {
+                System.out.println(j + ": " + userAgentStr[j]); 
+            }
