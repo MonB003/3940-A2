@@ -86,19 +86,7 @@ public class Router extends Thread {
             exception.printStackTrace();
         }
 
-        // /*----------------------------------------------------------------------------------------------
-        // */
-        // Class<?> c = Class.forName("UploadServlet"); // reflection is working
-        // HttpServlet upload = (HttpServlet) c.getDeclaredConstructor().newInstance();
-        // HttpServlet httpServlet = upload; //new UploadServlet(); // where reflection
-        // has to work, different server names, all classes must extend http servlet
-
-        // /*----------------------------------------------------------------------------------------------
-        // */
-        // httpServlet.doPost(req, res);
-        // OutputStream out = socket.getOutputStream();
-        // out.write(((ByteArrayOutputStream) baos).toByteArray());
-        // socket.close();
+      
 
     }
 

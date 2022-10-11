@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -192,6 +194,7 @@ public class ClientServlet extends Servlet {
         System.out.println("\n");
         while (userInput.equals("")) {
             try {
+                logErrorInFile("Invalid Input for file path.");
                 throw new InvalidInputException("Invalid Input...");
             } catch (InvalidInputException e) {
                 e.printStackTrace();
@@ -209,6 +212,7 @@ public class ClientServlet extends Servlet {
         System.out.println("\n");
         while (userInput.equals("")) {
             try {
+                logErrorInFile("Invalid Input for keyword.");
                 throw new InvalidInputException("Invalid Input...");
             } catch (InvalidInputException e) {
                 e.printStackTrace();
@@ -225,6 +229,7 @@ public class ClientServlet extends Servlet {
         System.out.println("\n");
         while (userInput.equals("")) {
             try {
+                logErrorInFile("Invalid Input for caption.");
                 throw new InvalidInputException("Invalid Input...");
             } catch (InvalidInputException e) {
                 e.printStackTrace();
@@ -318,6 +323,19 @@ public class ClientServlet extends Servlet {
             e.printStackTrace();
         }
     };
+
+
+    public void logErrorInFile(String errorMessage) {
+        try {
+            FileWriter myWriter = new FileWriter("error-log.txt", true);
+            myWriter.append("Error logged: " + errorMessage + "\n");
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     /** main method */
     public static void main(String args[]) {
