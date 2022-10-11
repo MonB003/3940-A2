@@ -31,6 +31,56 @@ public class ClientServlet extends Servlet {
     public String MultiKeyword = "";
     public String MultiCaption = "";
 
+
+
+
+
+
+
+
+ public void printImageList(){
+        File dir = new File("./images");
+        HashMap<String,String> responseOutput = new HashMap<String,String>();
+
+        String[] chld = dir.list();
+        Arrays.sort(chld);
+        System.out.println("Sorted List");
+        for (String x : chld){
+            System.out.println(x);
+        }
+
+    }
+
+
+
+
+
+
+    public String encodeImage(String imagePath) throws Exception {
+        FileInputStream imageStream = new FileInputStream(imagePath);
+        byte[] data = imageStream.readAllBytes();
+        String imageString = Base64.getEncoder().encodeToString(data);
+        return imageString;
+    }
+
+
+    public static BufferedImage decodeToImage(String imageString) {
+
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            Base64.Decoder decoder = Base64.getDecoder();
+            imageByte = decoder.decode(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+
     /*
      * Objectives:
      * Create Socket Connection to Server.java
@@ -45,7 +95,7 @@ public class ClientServlet extends Servlet {
      * POST Request to "Upload" an image to our /images directory.
      */
 
-    public void POSTRequest() {
+      public void POSTRequest() {
         // HttpURLConnection conn = null;
         BufferedReader reader = null;
         String charset = "UTF-8";
@@ -112,6 +162,12 @@ public class ClientServlet extends Servlet {
             BufferedReader respnse = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
 
             serverSocket.close();
+
+        } catch (Exception e) {
+            System.out.println("POST Request Error: " + e);
+            e.printStackTrace();
+        }
+    }
 
         } catch (Exception e) {
             System.out.println("POST Request Error: " + e);
