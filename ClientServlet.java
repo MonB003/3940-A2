@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 
 public class ClientServlet extends Servlet {
 
+    // Client Servlet Class
     // Defining for Socket, the name of the Host
     public String serverName = "localhost";
 
