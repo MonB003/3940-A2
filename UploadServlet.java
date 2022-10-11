@@ -151,10 +151,10 @@ public class UploadServlet extends Servlet {
                     
                     
                     out.println(fileName + "\n");
-                    System.out.println(fileName); // writing to the console
+                    // System.out.println(fileName); // writing to the console
                 }
                 Arrays.sort(chld);  // Sort the array
-                System.out.println("CHLD SORTED: ");
+                System.out.println("Sorted Image Listing: ");
                 for (String imageName : chld) {
                     System.out.println(imageName);
                 }
