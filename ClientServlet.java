@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientServlet extends Servlet {
@@ -118,62 +119,98 @@ public class ClientServlet extends Servlet {
         }
     }
 
-    public void getUserInput() throws InvalidInputException {
+    public boolean getUserInput() throws InvalidInputException {
 
         MultiDate = java.time.LocalDate.now().toString();
 
+        String[] questions = { "Please enter the file path for the image\n> ",
+                "Please enter a Keyword for the image\n> ", "Please enter a Caption for the image\n> " };
+        ArrayList<String> answers = new ArrayList<>();
         // UserInput Scanner
         Scanner scanner = new Scanner(System.in);
+        int index = 0;
+        boolean continueOption = true;
+        while (continueOption) {
+            System.out.println(questions[index]);
+            String userInput = scanner.nextLine();
 
-        // User Input for Image
-        System.out.print("Please enter the file path for the image\n> ");
+            try {
+                if (userInput.isEmpty()) {
+                    continueOption = true;
+                    //aspect here
+                    logErrorInFile("Incorrect input.");
+                    throw new InvalidInputException("incorrect input");
 
-        String userInput = scanner.nextLine();
-        System.out.println("\n");
+                } else {
+                    answers.add(userInput);
+                    System.out.println(answers);
 
-        while (userInput.equals("")) {
-            logErrorInFile("Invalid Input for file path.");  
-
-            System.out.print("Please enter the file path for the image\n> ");
-            userInput = scanner.nextLine();
-        }
-        imagePath = userInput;
-        System.out.println("Image Path: " + imagePath + "\n");
-
-        File checkPath = new File(imagePath);
-        if (!checkPath.exists()) {
-            logErrorInFile("Image path doesn't exist.");
-            throw new InvalidInputException("Image path doesn't exist");
-        }
-
-        // User Input for Keyword
-        System.out.print("Please enter a Keyword for the image\n> ");
-        userInput = scanner.nextLine();
-        System.out.println("\n");
-        while (userInput.equals("")) {
-            logErrorInFile("Invalid Input for keyword.");
-      
-            System.out.print("Please enter a Keyword for the image\n> ");
-            userInput = scanner.nextLine();
-        }
-        MultiKeyword = userInput;
-        System.out.println("Keyword: " + MultiKeyword + "\n");
-
-        // User Input for Keyword
-        System.out.print("Please enter a Caption for the image\n> ");
-        userInput = scanner.nextLine();
-        System.out.println("\n");
-        while (userInput.equals("")) {
-            logErrorInFile("Invalid Input for caption.");
-
-            System.out.print("Please enter a Caption for the image\n> ");
-            userInput = scanner.nextLine();
+                    if (answers.size() == 3) {
+                        continueOption = false;
+                    } else {
+                        index++;
+                    }
+                }
+            } catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            }
         }
 
-        MultiCaption = userInput;
+        imagePath = answers.get(0);
+        MultiKeyword = answers.get(1);
+        MultiCaption = answers.get(2);
+        System.out.println(answers);
 
-        System.out.println("Caption: " + MultiCaption + "\n");
-    
+        // // User Input for Image
+        // System.out.print("Please enter the file path for the image\n> ");
+
+        // String userInput = scanner.nextLine();
+        // System.out.println("\n");
+
+        // while (userInput.equals("")) {
+        // logErrorInFile("Invalid Input for file path.");
+
+        // System.out.print("Please enter the file path for the image\n> ");
+        // userInput = scanner.nextLine();
+        // }
+        // imagePath = userInput;
+        // System.out.println("Image Path: " + imagePath + "\n");
+
+        // File checkPath = new File(imagePath);
+        // if (!checkPath.exists()) {
+        // logErrorInFile("Image path doesn't exist.");
+        // throw new InvalidInputException("Image path doesn't exist");
+        // }
+
+        // // User Input for Keyword
+        // System.out.print("Please enter a Keyword for the image\n> ");
+        // userInput = scanner.nextLine();
+        // System.out.println("\n");
+        // while (userInput.equals("")) {
+        // logErrorInFile("Invalid Input for keyword.");
+
+        // System.out.print("Please enter a Keyword for the image\n> ");
+        // userInput = scanner.nextLine();
+        // }
+        // MultiKeyword = userInput;
+        // System.out.println("Keyword: " + MultiKeyword + "\n");
+
+        // // User Input for Keyword
+        // System.out.print("Please enter a Caption for the image\n> ");
+        // userInput = scanner.nextLine();
+        // System.out.println("\n");
+        // while (userInput.equals("")) {
+        // logErrorInFile("Invalid Input for caption.");
+
+        // System.out.print("Please enter a Caption for the image\n> ");
+        // userInput = scanner.nextLine();
+        // }
+
+        // MultiCaption = userInput;
+
+        // System.out.println("Caption: " + MultiCaption + "\n");
+        return continueOption;
+
     }
 
     public void doGet(Response res, Request req) {
@@ -184,7 +221,7 @@ public class ClientServlet extends Servlet {
 
     public void logErrorInFile(String errorMessage) {
         try {
-            FileWriter myWriter = new FileWriter("error-log.txt");
+            FileWriter myWriter = new FileWriter("error-log.txt",true);
             myWriter.append("\nError logged: " + errorMessage);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -198,20 +235,18 @@ public class ClientServlet extends Servlet {
     public static void main(String args[]) throws InvalidInputException {
 
         ClientServlet client = new ClientServlet();
-        client.getUserInput(); // get request --> making connection to server
-        client.POSTRequest();
-        // boolean continueProgram = true;
+        // client.getUserInput(); // get request --> making connection to server
+        // client.POSTRequest();
 
-        // while (continueProgram) {
-        //     try {
-        //         client.getUserInput(); // get request --> making connection to server
-        //         client.POSTRequest();
-        //         continueProgram = false;
-        //     } catch (InvalidInputException e) {
-        //         System.out.println(e.getMessage());  
-        //     }
-            
-        // }
+        boolean continueProgram = true;
+        while (continueProgram) {
+            try {
+                continueProgram = client.getUserInput();
+                client.POSTRequest();// get request --> making connection to server
+            } catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
     }
 
