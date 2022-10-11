@@ -17,10 +17,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
+
+// import org.json.simple.JSONObject;
 
 public class ClientServlet extends Servlet {
 
@@ -148,6 +152,32 @@ public class ClientServlet extends Servlet {
         return image;
     }
 
+    public void printImageList(){
+        File dir = new File("./images");
+        HashMap<String,String> responseOutput = new HashMap<String,String>();
+        
+        String[] chld = dir.list();
+        Arrays.sort(chld);
+        System.out.println("Sorted List");
+        for (String x : chld){
+            System.out.println(x);
+        }
+        // for (int i = 0; i < chld.length; i++) {
+        //     String currImage = "Image " + i + ": ";
+        //     String fileName = chld[i];
+
+        //     // Store image name in hashmap 
+        //     responseOutput.put(currImage, fileName);
+            
+        // }
+        // Arrays.sort(chld);  // Sort the array
+        // System.out.println("CHLD SORTED: ");
+        // for (String imageName : chld) {
+        //     System.out.println(imageName);
+        // }
+
+    }
+
     public void getUserInput() {
 
         MultiDate = java.time.LocalDate.now().toString();
@@ -160,7 +190,12 @@ public class ClientServlet extends Servlet {
         String userInput = scanner.nextLine();
         System.out.println("\n");
         while (userInput.equals("")) {
-            System.out.println("Invalid Input...");
+            try {
+                throw new InvalidInputException("Invalid Input...");
+            } catch (InvalidInputException e) {
+                e.printStackTrace();
+            }
+            
             System.out.print("Please enter the file path for the image\n> ");
             userInput = scanner.nextLine();
         }
@@ -172,7 +207,11 @@ public class ClientServlet extends Servlet {
         userInput = scanner.nextLine();
         System.out.println("\n");
         while (userInput.equals("")) {
-            System.out.println("Invalid Input...");
+            try {
+                throw new InvalidInputException("Invalid Input...");
+            } catch (InvalidInputException e) {
+                e.printStackTrace();
+            }
             System.out.print("Please enter a Keyword for the image\n> ");
             userInput = scanner.nextLine();
         }
@@ -184,7 +223,11 @@ public class ClientServlet extends Servlet {
         userInput = scanner.nextLine();
         System.out.println("\n");
         while (userInput.equals("")) {
-            System.out.println("Invalid Input...");
+            try {
+                throw new InvalidInputException("Invalid Input...");
+            } catch (InvalidInputException e) {
+                e.printStackTrace();
+            }
             System.out.print("Please enter a Caption for the image\n> ");
             userInput = scanner.nextLine();
         }
@@ -281,7 +324,7 @@ public class ClientServlet extends Servlet {
         ClientServlet client = new ClientServlet();
         client.getUserInput(); // get request --> making connection to server
         client.POSTRequest();
-
+        client.printImageList();
     }
 
 }
