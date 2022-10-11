@@ -1,0 +1,2 @@
+
+Error logged: Image path doesn't exist.

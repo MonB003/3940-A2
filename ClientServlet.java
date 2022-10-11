@@ -1,10 +1,7 @@
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -15,16 +12,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Clock;
+import java.security.InvalidKeyException;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.Scanner;
-
-import javax.imageio.ImageIO;
-
-// import org.json.simple.JSONObject;
 
 public class ClientServlet extends Servlet {
 
@@ -112,8 +102,7 @@ public class ClientServlet extends Servlet {
             writer.append("Content-Type: image/png").append(newLine);
             writer.append("Content-Transfer-Encoding: binary").append(newLine);
             writer.append(newLine).flush();
-            // Files.copy(file, outputStream);
-            writer.append(encodeImage(imagePath));
+            Files.copy(file, outputStream);
             outputStream.flush();
             writer.append(newLine).flush();
             // End of Multipart.
@@ -129,56 +118,7 @@ public class ClientServlet extends Servlet {
         }
     }
 
-    public String encodeImage(String imagePath) throws Exception{
-        FileInputStream imageStream = new FileInputStream(imagePath);
-        byte[] data = imageStream.readAllBytes();
-        String imageString = Base64.getEncoder().encodeToString(data);
-        return imageString;
-    }
-
-    public static BufferedImage decodeToImage(String imageString) {
- 
-        BufferedImage image = null;
-        byte[] imageByte;
-        try {
-            Base64.Decoder decoder = Base64.getDecoder();
-            imageByte = decoder.decode(imageString);
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
-            image = ImageIO.read(bis);
-            bis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-    public void printImageList(){
-        File dir = new File("./images");
-        HashMap<String,String> responseOutput = new HashMap<String,String>();
-        
-        String[] chld = dir.list();
-        Arrays.sort(chld);
-        System.out.println("Sorted List");
-        for (String x : chld){
-            System.out.println(x);
-        }
-        // for (int i = 0; i < chld.length; i++) {
-        //     String currImage = "Image " + i + ": ";
-        //     String fileName = chld[i];
-
-        //     // Store image name in hashmap 
-        //     responseOutput.put(currImage, fileName);
-            
-        // }
-        // Arrays.sort(chld);  // Sort the array
-        // System.out.println("CHLD SORTED: ");
-        // for (String imageName : chld) {
-        //     System.out.println(imageName);
-        // }
-
-    }
-
-    public void getUserInput() {
+    public void getUserInput() throws InvalidInputException {
 
         MultiDate = java.time.LocalDate.now().toString();
 
@@ -187,31 +127,32 @@ public class ClientServlet extends Servlet {
 
         // User Input for Image
         System.out.print("Please enter the file path for the image\n> ");
+
         String userInput = scanner.nextLine();
         System.out.println("\n");
+
         while (userInput.equals("")) {
-            try {
-                throw new InvalidInputException("Invalid Input...");
-            } catch (InvalidInputException e) {
-                e.printStackTrace();
-            }
-            
+            logErrorInFile("Invalid Input for file path.");  
+
             System.out.print("Please enter the file path for the image\n> ");
             userInput = scanner.nextLine();
         }
         imagePath = userInput;
         System.out.println("Image Path: " + imagePath + "\n");
 
+        File checkPath = new File(imagePath);
+        if (!checkPath.exists()) {
+            logErrorInFile("Image path doesn't exist.");
+            throw new InvalidInputException("Image path doesn't exist");
+        }
+
         // User Input for Keyword
         System.out.print("Please enter a Keyword for the image\n> ");
         userInput = scanner.nextLine();
         System.out.println("\n");
         while (userInput.equals("")) {
-            try {
-                throw new InvalidInputException("Invalid Input...");
-            } catch (InvalidInputException e) {
-                e.printStackTrace();
-            }
+            logErrorInFile("Invalid Input for keyword.");
+      
             System.out.print("Please enter a Keyword for the image\n> ");
             userInput = scanner.nextLine();
         }
@@ -223,108 +164,55 @@ public class ClientServlet extends Servlet {
         userInput = scanner.nextLine();
         System.out.println("\n");
         while (userInput.equals("")) {
-            try {
-                throw new InvalidInputException("Invalid Input...");
-            } catch (InvalidInputException e) {
-                e.printStackTrace();
-            }
+            logErrorInFile("Invalid Input for caption.");
+
             System.out.print("Please enter a Caption for the image\n> ");
             userInput = scanner.nextLine();
         }
-        MultiCaption = userInput;
-        System.out.println("Caption: " + MultiCaption + "\n");
 
+        MultiCaption = userInput;
+
+        System.out.println("Caption: " + MultiCaption + "\n");
+    
     }
 
     public void doGet(Response res, Request req) {
-        System.out.println("ClientServlet.java doGet");
     };
 
     public void doPost(Response res, Request req) {
-        System.out.println("ClientServlet.java doPost");
-        System.out.println("Running CLI Servlet POST Code.");
-
-        // Detect CLI, Execute CLI POST Request Implementation
-        try {
-            System.out.println("POSTRequest-UserAgent: " + req.getUserAgent() + " detected.");
-
-            // System.out.println("Caption from Payload: " + req.getFormData("Caption"));
-
-            // Reference Jay's UploadServlet.java code from Assignment1b.
-            // Objective: Need to define getPart() method in Request Class to help parse
-            // multipart/form-data
-            // Part filePart = req.getPart("File");
-            // String fileName = filePart.getSubmittedFileName();
-            // System.out.println("Recieved Filename: "+ fileName);
-
-            System.out.println("Recieved Date: " + req.getFormData("Date"));
-            System.out.println("Recieved Keyword: " + req.getFormData("Keyword"));
-            System.out.println("Recieved Caption: " + req.getFormData("Caption"));
-
-            Clock clock = Clock.systemDefaultZone();
-            long milliSeconds = clock.millis();
-            String fileName = String.valueOf(milliSeconds);
-
-            BufferedImage image = decodeToImage(req.getImageByteCode());
-            File outputFile = new File("./images/" + fileName + ".png");
-            ImageIO.write(image, "png", outputFile);
-
-            // OutputStream outputStream = null;
-            // ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-            // try {
-            // outputStream = new FileOutputStream("./images/" + fileName + ".png");
-            // byteOutputStream = new ByteArrayOutputStream();
-            // byteOutputStream.write(req.getImageByteCode());
-            // byteOutputStream.writeTo(outputStream);
-            // outputStream.close();
-            // } catch (Exception e){
-            // System.out.println(e);
-            // }
-
-            // try (FileOutputStream fos = new FileOutputStream("./images/" + fileName + ".png")) {
-            //     fos.write(req.getImageByteCode());
-            // }
-
-            //-------------------------file reading function
-
-            // File imageText = new File("./images/" + fileName + ".txt");
-
-            // if(imageText.exists()){
-            //     BufferedImage bImage = ImageIO.read(imageText);
-            //     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //     ImageIO.write(bImage, "png",baos);
-            //     byte[] data = baos.toByteArray();
-            //     ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            //     BufferedImage bImage2 = ImageIO.read(bis);
-            //     ImageIO.write(bImage2, "png", new File("output.png"));
-            //     System.out.println("image created");
-            // }
-
-            // System.out.println("byte code: " + req.getImageByteCode());
-            // ByteArrayInputStream inputStream = new ByteArrayInputStream(req.getImageByteCode());
-            // System.out.println("input stream:" + inputStream.available());
-            // BufferedImage image = ImageIO.read(inputStream);
-            // System.out.println("image buff: "  + image);
-            // ImageIO.write(image, "png", new File("./images/" + fileName+".png"));
-           
-            
-            // Path path = Paths.get("./images");
-            // Files.write(path,req.getImageByteCode());
-            // File.write(System.getProperty("catalina.base") +
-            // "/webapps/Client-Server-A1b/images/" + fileName);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     };
 
+    public void logErrorInFile(String errorMessage) {
+        try {
+            FileWriter myWriter = new FileWriter("error-log.txt");
+            myWriter.append("\nError logged: " + errorMessage);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     /** main method */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InvalidInputException {
 
         ClientServlet client = new ClientServlet();
         client.getUserInput(); // get request --> making connection to server
         client.POSTRequest();
-        client.printImageList();
+        // boolean continueProgram = true;
+
+        // while (continueProgram) {
+        //     try {
+        //         client.getUserInput(); // get request --> making connection to server
+        //         client.POSTRequest();
+        //         continueProgram = false;
+        //     } catch (InvalidInputException e) {
+        //         System.out.println(e.getMessage());  
+        //     }
+            
+        // }
+
     }
 
 }
