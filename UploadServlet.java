@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 // Needed to parse Multipart/form-data
-import javax.servlet.http.Part;
 
 import java.io.*;
 

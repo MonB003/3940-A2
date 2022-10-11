@@ -9,7 +9,6 @@ import java.net.Socket;
 public class Router extends Thread {
 
     private Socket socket = null;
-
     public Router(Socket socket) {
         this.socket = socket;
     }
@@ -32,7 +31,6 @@ public class Router extends Thread {
             String locationOfRequest = req.getUserAgent();
 
             Servlet up = null; // conrete class is new concrete version of servlet to allow for casting/reflection to subclasses.
-
             if(locationOfRequest.equals("browser")){
                 Class<?> c = Class.forName("UploadServlet");
                 up = (UploadServlet) c.getDeclaredConstructor().newInstance(); // cast to upload
